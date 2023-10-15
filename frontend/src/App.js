@@ -11,6 +11,8 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Contact from './components/Contact';
 import Signup from './components/Signup';
+import Login from './components/Login';
+import About from './components/About' 
 
 
 
@@ -22,8 +24,8 @@ function App() {
         <Routes>
           <Route path='' element={<Home/>}></Route>
           <Route path='contact' element={<Contact/>}></Route>
-          <Route path='about-us' element={<Update/>}></Route>
-          <Route path='login' element={<Update/>}></Route>
+          <Route path='about-us' element={<About/>}></Route>
+          <Route path='login' element={<Login/>}></Route>
           <Route path='signup' element={<Signup/>}></Route>
 
           <Route path='*' element={<PageNotFound/>}></Route>
