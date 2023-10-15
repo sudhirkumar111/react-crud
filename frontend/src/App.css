@@ -52,7 +52,7 @@
 
 #tms{
   border-radius: 4px;
-  opacity: 0.8;
+  /* opacity: 0.8; */
   font-size: large;
   font-family: cursive;
   font-weight: bold;
@@ -82,4 +82,10 @@ html body{
   color:white;
   text-decoration: none;
   padding: 10px 12px 10px 12px;
+}
+
+
+#signup-form{
+  opacity: 1;
+
 }
