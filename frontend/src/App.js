@@ -13,6 +13,7 @@ import Contact from './components/Contact';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import About from './components/About' 
+import Dashboard from './components/Dashboard';
 
 
 
@@ -27,6 +28,7 @@ function App() {
           <Route path='about-us' element={<About/>}></Route>
           <Route path='login' element={<Login/>}></Route>
           <Route path='signup' element={<Signup/>}></Route>
+          <Route path='dashboard' element={<Dashboard/>}></Route>
 
           <Route path='*' element={<PageNotFound/>}></Route>
 

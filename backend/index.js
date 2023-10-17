@@ -20,7 +20,6 @@ app.use(express.json());
 
 app.post('/register',async (req,res)=>{
     const {firstName,lastName,email,password} = req.body
-    console.log(req.body,'ererferferferferferferferf')
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.findOne({email:email});
     console.log(user,"----------------user")
@@ -36,25 +35,30 @@ app.post('/register',async (req,res)=>{
 app.post('/login',async (req,res)=>{
     const {email,password} = req.body
     const user = await User.findOne({email});
-    console.log(user,"===========user")
-    let checkPassword;
-    if(user)
-    checkPassword = await bcrypt.compare(password,user.password);
-    if(user && checkPassword){ 
-        res.redirect('/home')
+    let checkPassword  = false;
+    if(user){
+        checkPassword = await bcrypt.compare(password,user.password);
+    if(checkPassword){ 
+        res.send({message:"Login Successfully",success:true})
            }
     else{
-        res.render('index',{'user':1 ,"register":1,"userNotFound":1})
+        res.send({message:"Wrong Credentials",success:false})
+
+        
     }
+
+    }else{
+        res.send({message:"User not available",})
+    }
+    
  
        });
 
 
-app.get('/home',async (req,res)=>{
+app.get('/all-task',async (req,res)=>{
     try{
-        const studentData = await Student.find();
-        console.log(studentData,"QQQQQQQQQQQQ")
-        res.render('home',{"data":studentData})
+        const task = await Task.find();
+        res.send(task)
     }
     catch(error){
         console.log(error)
@@ -62,33 +66,45 @@ app.get('/home',async (req,res)=>{
 });
 
 
-app.post('/home',async (req,res)=>{
+app.post('/create',async (req,res)=>{
     try
     {
-    const {fullName,course,email} = req.body
-    const student = new Student({fullName:fullName,course:course,email:email});
-    await student.save()
-    res.redirect('/home')
+    const {description,priority} = req.body
+    const task = new Task(req.body);
+    await task.save()
+    res.send({message:"Task Added Successfully",success:true})
     }
     catch(error){
+        res.send({message:"something went wrong",success:false})
         console.log(error)  
     }    
 });
 
-app.get('/delete/:id',async (req,res)=>{
-    const id=req.params.id;
-    await Student.findByIdAndDelete(id);
-    res.redirect('/home')
+app.delete('/delete-task/:id',async (req,res)=>{
+    const id=req.params.id
+    const data = await Task.findByIdAndDelete(id);
+    console.log(data,"============data")
+    if(data._id)
+    res.send({message:"Task deleted successfully",success:true})
+    else
+    res.send({message:"Something went wrong",success:false})
 })
 
 
-app.get('/edit/:id',async (req,res)=>{
-    const id=req.params.id;
-    const std=await Student.findById({_id:id});
-    res.render('edit',{"std":std})
+app.patch('/edit-task',async (req,res)=>{
+    const {id,data}=req.body;
+    try{
+        const response = await Task.findByIdAndUpdate({_id:id},data)
+        res.send({message:"Task Updated Successfully",success:true})
+
+    }
+    catch(error){
+        res.send({message:error,status:false})
+    }
+
 })
 
-app.post('/edit/:id',async (req,res)=>{
+app.post('/edit-task',async (req,res)=>{
         await Student.findByIdAndUpdate({_id:req.params.id},req.body)
         res.redirect('/home')
 })
