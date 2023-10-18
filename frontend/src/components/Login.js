@@ -1,51 +1,66 @@
 import React from 'react'
-import {useForm} from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify'
 
-
-const Login=()=>{
+const Login = () => {
   const navigate = useNavigate();
-  const {register,handleSubmit,reset} = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit =async (data)=>{
-      const res = await axios.post('/login',data);
-      console.log(res,"=============res")
-      if(res.status ===200){
-        navigate("/dashboard")
-      }}
+  const onSubmit = async (data) => {
+    const res = await axios.post('/login', data);
+    console.log(res.data)
+    if (res.data.success === true) {
+      localStorage.setItem("token", res.data.token)
+      localStorage.setItem('firstName', res.data.user.firstName)
+      localStorage.setItem('lastName', res.data.user.lastName)
+      localStorage.setItem('userId', res.data.user._id)
+      toast.success("Login Successfull")
+      navigate('/dashboard')
 
+    } else {
+      toast.error(res.data.message)
+    }
+  }
 
+  return (
+    <>
+      <ToastContainer
+        hideProgressBar
+        autoClose={1000}
+      />
+      <div id="login-form" className='bg-dark mx-auto pt-2 pb-3 mt-5'>
+        <p className='text-center display-6 text-light'>Login Here</p>
 
-
-  
-    return(
-        <>
-        {/* <h1 className='display-6 text-center text-danger mx-auto  mt-3 pb-2 bg-dark w-75'>Welcome to Task Management System</h1> */}
-        {/* <img className='text-center' src='https://cdn.pixabay.com/photo/2019/01/15/11/09/time-3933842_1280.jpg' width="800px" height="300px"></img> */}
-            <div id="login-form" className='bg-dark mx-auto pt-2 pb-3 mt-5'>
-            <p className='text-center display-6 text-light'>Login Here</p>
-            <form id='signup-form' onSubmit={handleSubmit(onSubmit)} className='mx-1 px-4 '>         
+        <form id='signup-form' onSubmit={handleSubmit(onSubmit)} className='mx-1 px-4 '>
           <div className="form-group">
-            <input type="email" {...register('email',{required:"Email is required"})} className="form-control"  placeholder='Email' />
-          </div>
-          <div className="form-group mt-2">
-            <input type="password"  {...register('password',{required:"Password is required"})} className="form-control"  placeholder='Password' />
+            <input type="email" {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address',
+              }
+            })} placeholder='email' className="form-control mt-2"></input>
+            {errors.email && <small className='errors'>{errors.email.message}</small>}
           </div>
           
-          <button type="submit"  className="btn btn-success mt-2">Login</button>
-       
+          <div className="form-group mt-2">
+            <input type="password"  {...register('password', {
+              required: "Password is required", minLength: {
+                value: 6,
+                message: 'Password must be at least 6 characters long',
+              }
+            })} className="form-control" placeholder='Password' />
+            {errors.password && <p className='errors'>{errors.password.message}</p>}
+          </div>
 
+          <button type="submit" style={{ "border-radius": "20px" }} className="btn btn-success px-4 py-1 mt-2">Login</button>
+        </form>
+      </div>
 
-
-            </form>
-
-
-                
-            </div>
-
-        </>
-    )
+    </>
+  )
 
 }
 
