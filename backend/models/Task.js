@@ -4,7 +4,8 @@ const TaskSchema = new mongoose.Schema(
     {
         description:{type:String, required:true},
         priority:{type:String, required:true},
-        dueDate: {type:Date, required:true}
+        dueDate: {type:Date, required:true},
+        userId:{type:mongoose.ObjectId}
        
     }
 );
