@@ -4,5 +4,5 @@ To start server:
 
 To start Client:
 	1. go to frontend folder
-	2. npm start
+	2. npm startt
 
